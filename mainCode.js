@@ -1,4 +1,4 @@
-var coOccurrenceMatrix = [];
+var coOccurrenceMatrix = [], occurencesArray = [];
 
 window.onload = function () {
 
@@ -18,29 +18,28 @@ function getAjax(textFile, successFunction) {
 
 }
 
-function Tag(name){
+function Tag(tagsArray, index){
 
-    this.name = name.toString();
+    this.name = tagsArray[index][0].toString();
     this.occurrenceCount = 0;
+    this.totalOccurrences = Number(tagsArray[index][1]);
 
 }
 
 function loadTags(data) {
 
     var tagsArray = data.split('\n');
-    var newTagArray = [];
 
     for (var tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
         tagsArray[tagIndex] = tagsArray[tagIndex].split(",");
-        tagsArray[tagIndex] = tagsArray[tagIndex][0];
     }
 
     for (tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
         var newTagArray = [];
         for(var j = 0; j < tagsArray.length; j ++){
-            newTagArray[j] = new Tag(tagsArray[j]);
+            newTagArray[j] = new Tag(tagsArray, j);
         }
-        coOccurrenceMatrix[tagIndex] = {name: tagsArray[tagIndex], tags: newTagArray};
+        coOccurrenceMatrix[tagIndex] = {name: tagsArray[tagIndex][0], tags: newTagArray};
     }
 
     console.log(coOccurrenceMatrix);
@@ -73,9 +72,11 @@ function coOccurrenceText(tagsArray) {
     }
 
     for(i = 0; i < coOccurrenceMatrix.length; i ++){
+        for(var j = 0; j < coOccurrenceMatrix[i].tags.length; j ++){
+            coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log(tagsArray.length / coOccurrenceMatrix[i].tags[j].totalOccurrences);
+        }
         coOccurrenceMatrix[i].tags = coOccurrenceMatrix[i].tags.sortObjectArray("occurrenceCount");
     }
-
 
 }
 
