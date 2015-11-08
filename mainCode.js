@@ -18,9 +18,17 @@ function getAjax(textFile, successFunction) {
 
 }
 
+function Tag(name){
+
+    this.name = name.toString();
+    this.occurrenceCount = 0;
+
+}
+
 function loadTags(data) {
 
     var tagsArray = data.split('\n');
+    var newTagArray = [];
 
     for (var tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
         tagsArray[tagIndex] = tagsArray[tagIndex].split(",");
@@ -28,13 +36,11 @@ function loadTags(data) {
     }
 
     for (tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
-        tagsArray[tagIndex] = {name: tagsArray[tagIndex], occurrenceCount: 0};
-    }
-
-    for (tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
-        coOccurrenceMatrix[tagIndex] = {};
-        coOccurrenceMatrix[tagIndex].name = tagsArray[tagIndex].name;
-        coOccurrenceMatrix[tagIndex].tags = tagsArray;
+        var newTagArray = [];
+        for(var j = 0; j < tagsArray.length; j ++){
+            newTagArray[j] = new Tag(tagsArray[j]);
+        }
+        coOccurrenceMatrix[tagIndex] = {name: tagsArray[tagIndex], tags: newTagArray};
     }
 
     console.log(coOccurrenceMatrix);
@@ -52,45 +58,60 @@ function loadText(data) {
         textArray[i] = textArray[i].split(",");
         textArray[i][1] = textArray[i][1].replace(/[\n\r]/g, '');
 
-        console.log(textArray);
-
-        coOccurrenceText(textArray);
-
     }
+
+    coOccurrenceText(textArray);
+    console.log(textArray);
+}
+
+function coOccurrenceText(tagsArray) {
+
+    //Create counter used to look backwards in array for items with the same photo index
+    for (var i = 0; i < tagsArray.length; i++) {
+            lookForTag(tagsArray, i, 1);
+            lookForTag(tagsArray, i, -1);
+    }
+
 
 }
 
-function coOccurrenceText(textArray){
+function lookForTag(tagsArray, i, posNeg){
 
-    var counter;
+    var counter = posNeg;
 
-    for(var i = 0; i < textArray.length; i ++){
+        while ((i + counter) < tagsArray.length && i > 0 && tagsArray[i][0] == tagsArray[i + counter][0]) {
 
-        counter = 1;
+            //Check what position the tag in question is at in the co-occurrence Matrix
+            var matrixRow = coOccurrenceMatrix.searchObjectArray("name", tagsArray[i][1]);
 
-        //Loop backwards in the array for all elements with the same photo index
-        while(i >= counter && textArray[i][0] == textArray[i - counter][0]){
-
-            //Loop through all rows in the matrix to check co-occurrence
-            for (var matrixRow = 0; matrixRow < coOccurrenceMatrix.length; matrixRow++) {
-
+            if (matrixRow > -1) {
                 //Check if the name of the tag in the matrix matches that of the tag being searched for
-                if (coOccurrenceMatrix[matrixRow].name == textArray[i][1]) {
-
-                    for (var matrixTag = 0; matrixTag < coOccurrenceMatrix[matrixRow].tags.length; matrixTag++) {
-
-                        if (coOccurrenceMatrix[matrixRow].tags[matrixTag].name == textArray[i - counter][1]) {
-                                coOccurrenceMatrix[matrixRow].tags[matrixTag].occurrenceCount++;
-                            }
-                        //}
-                    }
+                var matrixTag = coOccurrenceMatrix[matrixRow].tags.searchObjectArray("name", tagsArray[i + counter][1]);
+                if (matrixTag > -1) {
+                    coOccurrenceMatrix[matrixRow].tags[matrixTag].occurrenceCount++;
                 }
+
             }
 
-            counter++;
+            counter += posNeg;
+
+        }
+
+}
+
+//Search an array of objects within a specified key for a certain string
+Array.prototype.searchObjectArray = function (objectKey, searchTerm) {
+
+    for (var i = 0; i < this.length; i++) {
+        if (this[i][objectKey] == searchTerm) {
+            return i;
         }
     }
-}
+
+    return -1;
+
+};
+
 function coOccurrence(csvData) {
 
     //Loop through all lines of the csvData (from photos_tags.csv)
