@@ -65,7 +65,7 @@ function loadText(data) {
 
 function coOccurrenceText(tagsArray) {
 
-    //Create counter used to look backwards in array for items with the same photo index
+    //Check for co-occurring tags
     for (var i = 0; i < tagsArray.length; i++) {
             lookForTag(tagsArray, i, 1);
             lookForTag(tagsArray, i, -1);
@@ -73,11 +73,15 @@ function coOccurrenceText(tagsArray) {
 
     for(i = 0; i < coOccurrenceMatrix.length; i ++){
         for(var j = 0; j < coOccurrenceMatrix[i].tags.length; j ++){
-            coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log(tagsArray.length / coOccurrenceMatrix[i].tags[j].totalOccurrences);
+
+            //Calculate weighted score
+            coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log10(tagsArray.length / coOccurrenceMatrix[i].tags[j].totalOccurrences);
         }
+        //Sort coOccurrence tags by numerical order of occurrence (don't use when creating CSV file)
         coOccurrenceMatrix[i].tags = coOccurrenceMatrix[i].tags.sortObjectArray("occurrenceCount");
     }
 
+    coOccurrenceMatrix.createCSV();
 }
 
 function lookForTag(tagsArray, i, posNeg){
@@ -103,6 +107,27 @@ function lookForTag(tagsArray, i, posNeg){
         }
 
 }
+
+Array.prototype.createCSV = function(){
+
+    var newLine = ",";
+
+    for(var tagNames = 0; tagNames < this.length; tagNames ++){
+        newLine += this[tagNames].name + ",";
+    }
+    newLine = newLine.substring(0, newLine.length - 1);
+    newLine += "\n";
+    for(var rows = 0; rows < this.length; rows ++){
+        newLine += this[rows].name + ",";
+        for(var cols = 0; cols < this[rows].tags.length; cols ++){
+            newLine += this[rows].tags[cols].occurrenceCount + ",";
+        }
+        newLine = newLine.substring(0, newLine.length - 1);
+        newLine += "\n";
+    }
+
+    console.log(newLine);
+};
 
 //Search an array of objects within a specified key for a certain string
 Array.prototype.searchObjectArray = function (objectKey, searchTerm) {
