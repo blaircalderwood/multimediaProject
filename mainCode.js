@@ -78,13 +78,14 @@ function coOccurrenceText(tagsArray) {
             lookForTag(tagsArray, i, 1);
             lookForTag(tagsArray, i, -1);
     }
+    console.log(tagsArray);
 
     //Loop through all tags in co-occurrence matrix
     for(i = 0; i < coOccurrenceMatrix.length; i ++){
         for(var j = 0; j < coOccurrenceMatrix[i].tags.length; j ++){
 
             //Calculate weighted score
-            coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log10(tagsArray.length / coOccurrenceMatrix[i].tags[j].totalOccurrences);
+            coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log(10000 / coOccurrenceMatrix[i].tags[j].totalOccurrences);
         }
         //Sort coOccurrence tags by numerical order of occurrence (don't use when creating CSV file)
         coOccurrenceMatrix[i].tags = coOccurrenceMatrix[i].tags.sortObjectArray("occurrenceCount");
