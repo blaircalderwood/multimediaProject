@@ -30,7 +30,7 @@ function getAjax(textFile, successFunction) {
  *
  * @param tagsArray - The array in which the tag name resides
  * @param index - The array position in which the tag name resides
- * @constructor - Returns a new tag object
+ * @constructor - Tag Object
  */
 function Tag(tagsArray, index){
 
