@@ -1,4 +1,4 @@
-var coOccurrenceMatrix = [], occurencesArray = [];
+var coOccurrenceMatrix = [];
 
 window.onload = function () {
 
