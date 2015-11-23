@@ -92,7 +92,7 @@ function coOccurrenceText(tagsArray) {
     }
 
     //Write the co-occurrence matrix in CSV form to the console (don't use with sorting)
-    coOccurrenceMatrix.createCSV();
+    //coOccurrenceMatrix.createCSV();
 }
 
 //Check which tags occur in the same image
