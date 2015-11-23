@@ -1,4 +1,32 @@
-var coOccurrenceMatrix = [];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mainCode.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: mainCode.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var coOccurrenceMatrix = [];
 
 /**Load the tags from the CSV file when the window is first loaded
  *
@@ -49,13 +77,13 @@ function loadTags(data) {
     var tagsArray = data.split('\n');
 
     //Split the data by commas so each array will contain an array of two items - the tag name and total occurrences
-    for (var tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
+    for (var tagIndex = 0; tagIndex &lt; tagsArray.length; tagIndex++) {
         tagsArray[tagIndex] = tagsArray[tagIndex].split(",");
     }
 
-    for (tagIndex = 0; tagIndex < tagsArray.length; tagIndex++) {
+    for (tagIndex = 0; tagIndex &lt; tagsArray.length; tagIndex++) {
         var newTagArray = [];
-        for(var j = 0; j < tagsArray.length; j ++){
+        for(var j = 0; j &lt; tagsArray.length; j ++){
             newTagArray[j] = new Tag(tagsArray, j);
         }
         coOccurrenceMatrix[tagIndex] = {name: tagsArray[tagIndex][0], tags: newTagArray};
@@ -76,7 +104,7 @@ function loadText(data) {
     var textArray = data.split("\n");
 
     //Split each array item into an array of photo number and tag name
-    for (var i = 0; i < textArray.length; i++) {
+    for (var i = 0; i &lt; textArray.length; i++) {
 
         textArray[i] = textArray[i].split(",");
         textArray[i][1] = textArray[i][1].replace(/[\n\r]/g, '');
@@ -96,14 +124,14 @@ function coOccurrenceText(tagsArray) {
     //Loop through each tag in array and check for co-occurrences both in the following array items with the same photo
     //number and the the previous array items with the same photo number.
     //This enables a tag occurring at array index 10 to be included in the occurrence count for a tag at index 11
-    for (var i = 0; i < tagsArray.length; i++) {
+    for (var i = 0; i &lt; tagsArray.length; i++) {
             lookForTag(tagsArray, i, 1);
             lookForTag(tagsArray, i, -1);
     }
 
     //Calculate weighted score for all tags
-    for(i = 0; i < coOccurrenceMatrix.length; i ++){
-        for(var j = 0; j < coOccurrenceMatrix[i].tags.length; j ++){
+    for(i = 0; i &lt; coOccurrenceMatrix.length; i ++){
+        for(var j = 0; j &lt; coOccurrenceMatrix[i].tags.length; j ++){
             coOccurrenceMatrix[i].tags[j].occurrenceCount *= Math.log(10000 / coOccurrenceMatrix[i].tags[j].totalOccurrences);
         }
 
@@ -126,7 +154,7 @@ function lookForTag(tagsArray, i, posNeg){
     var counter = posNeg;
 
         //Loop until tag one's image number does not equal tag two's image number
-        while ((i + counter) < tagsArray.length && i > 0 && tagsArray[i][0] == tagsArray[i + counter][0]) {
+        while ((i + counter) &lt; tagsArray.length &amp;&amp; i > 0 &amp;&amp; tagsArray[i][0] == tagsArray[i + counter][0]) {
 
             //Check what position the tag in question is at in the co-occurrence Matrix
             var matrixRow = coOccurrenceMatrix.searchObjectArray("name", tagsArray[i][1]);
@@ -159,7 +187,7 @@ Array.prototype.createCSV = function(){
     var newLine = ",";
 
     //Write all tag names to top line of CSV file
-    for(var tagNames = 0; tagNames < this.length; tagNames ++){
+    for(var tagNames = 0; tagNames &lt; this.length; tagNames ++){
         newLine += this[tagNames].name + ",";
     }
     //Remove trailing comma and create a new line
@@ -167,9 +195,9 @@ Array.prototype.createCSV = function(){
     newLine += "\n";
 
     //Write all tag names in the left column alongside each occurrence count for that tag
-    for(var rows = 0; rows < this.length; rows ++){
+    for(var rows = 0; rows &lt; this.length; rows ++){
         newLine += this[rows].name + ",";
-        for(var cols = 0; cols < this[rows].tags.length; cols ++){
+        for(var cols = 0; cols &lt; this[rows].tags.length; cols ++){
             newLine += this[rows].tags[cols].occurrenceCount + ",";
         }
         newLine = newLine.substring(0, newLine.length - 1);
@@ -189,7 +217,7 @@ Array.prototype.createCSV = function(){
  */
 Array.prototype.searchObjectArray = function (objectKey, searchTerm) {
 
-    for (var i = 0; i < this.length; i++) {
+    for (var i = 0; i &lt; this.length; i++) {
         if (this[i][objectKey] == searchTerm) {
             return i;
         }
@@ -220,7 +248,7 @@ function topFive(tagName){
     var topFiveArray = [];
 
     if(tagIndex > -1){
-        for(var i = 0; i < 5; i++){
+        for(var i = 0; i &lt; 5; i++){
             topFiveArray.push(coOccurrenceMatrix[tagIndex].tags[i]);
         }
         return topFiveArray;
@@ -231,3 +259,26 @@ function topFive(tagName){
     }
 
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="%2520Returns%2520a%2520new%2520tag%2520object.html">- Returns a new tag object</a></li></ul><h3>Global</h3><ul><li><a href="global.html#coOccurrenceText">coOccurrenceText</a></li><li><a href="global.html#getAjax">getAjax</a></li><li><a href="global.html#loadTags">loadTags</a></li><li><a href="global.html#loadText">loadText</a></li><li><a href="global.html#lookForTag">lookForTag</a></li><li><a href="global.html#topFive">topFive</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a> on Mon Nov 23 2015 07:38:42 GMT+0000 (GMT Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
